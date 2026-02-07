@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "peace-script-ai"
+  },
+  "targets": {
+    "peace-script-ai": {
+      "hosting": {
+        "peace-play": [
+          "peace-play-official"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

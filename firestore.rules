@@ -1,0 +1,17 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Peace Play Videos: Only authenticated users can access
+    match /peace-play/{videoId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+    
+    // Default rule: Require Custom Authentication for all other collections
+    // This prevents anonymous public access while maintaining access for logged-in users
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
