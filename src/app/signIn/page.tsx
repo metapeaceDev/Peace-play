@@ -25,13 +25,18 @@ const SignInPage = () => {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/"); // Redirect to home page after login
     } catch (err: any) {
-      console.error(err);
+      // Handle explicit auth errors
       let errorMessage = "เกิดข้อผิดพลาดในการเข้าสู่ระบบ";
+      
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
         errorMessage = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
+        // Do not console.error for expected validation errors to keep console clean
       } else if (err.code === 'auth/too-many-requests') {
         errorMessage = "เข้าสู่ระบบผิดพลาดบ่อยเกินไป โปรดลองใหม่ภายหลัง";
+      } else {
+        console.error("Login error:", err); // Log only unexpected errors
       }
+      
       setError(errorMessage);
     } finally {
       setLoading(false);
