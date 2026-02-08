@@ -26,7 +26,13 @@ const SignInPage = () => {
       router.push("/"); // Redirect to home page after login
     } catch (err: any) {
       console.error(err);
-      setError("เกิดข้อผิดพลาดในการเข้าสู่ระบบ: " + (err.message || "โปรดตรวจสอบข้อมูลอีกครั้ง"));
+      let errorMessage = "เกิดข้อผิดพลาดในการเข้าสู่ระบบ";
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+        errorMessage = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
+      } else if (err.code === 'auth/too-many-requests') {
+        errorMessage = "เข้าสู่ระบบผิดพลาดบ่อยเกินไป โปรดลองใหม่ภายหลัง";
+      }
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
