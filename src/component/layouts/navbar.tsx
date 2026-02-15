@@ -108,7 +108,14 @@ const NavBarTop = ({ hasSidebar = false }: { hasSidebar?: boolean }) => {
                     className="text-cyan-600 font-bold"
                     onClick={() => window.open("https://peace-script-ai.web.app/", "_blank")}
                   >
-                    Peace Studio
+                    🎬 Peace Studio
+                  </DropdownItem>
+                  <DropdownItem 
+                    key="peace_market" 
+                    className="text-emerald-600 font-bold"
+                    onClick={() => window.open(process.env.NEXT_PUBLIC_MARKET_URL || "http://localhost:3001", "_blank")}
+                  >
+                    🛒 Market
                   </DropdownItem>
                   <DropdownItem key="logout" className="text-red-500" color="danger" onClick={logout}>
                     ออกจากระบบ
