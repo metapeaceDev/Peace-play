@@ -20,19 +20,19 @@ function Index() {
 
           <div className="">
             <h2 className="text-[#2F5D86] text-[20px] ">ติดต่อเรา</h2>
-            <div className="text-[#111111] text-[16px] flex gap-1 pt-2">
+            <div className="text-white text-[16px] flex gap-1 pt-2">
               <h3 className="font-bold">โทรศัพท์ : </h3>
-              <h4 className="text-decoration-line: underline font-extralight">
+              <h4 className="text-white text-decoration-line: underline font-extralight">
                 061-827-6888
               </h4>
             </div>
-            <div className="text-[#111111] text-[16px] flex gap-1 pt-2">
+            <div className="text-white text-[16px] flex gap-1 pt-2">
               <h3 className="font-bold">แฟลกซ์ : </h3>
               <h4 className="text-decoration-line: underline font-extralight">
                 061-827-6888
               </h4>
             </div>
-            <div className="text-[#111111] text-[16px] flex gap-1 pt-2">
+            <div className="text-white text-[16px] flex gap-1 pt-2">
               <h3 className="font-bold">อีเมล : </h3>
               <h4>saraban@acfs.go.th</h4>
             </div>
@@ -125,26 +125,26 @@ function Index() {
               แพลตฟอร์มความบันเทิง Peace Play
             </h1>
             <h1 className="text-[#545859] text-[20px]">METAPEACE OFFICIAL</h1>
-            <h3 className="text-[#111111] text-[16px] pt-2">
+            <h3 className="text-white text-[16px] pt-2">
               319 วังจันทรเกษม ถนนราชดำเนินนอก แขวงดุสิต เขตดุสิต กทม. 10300
             </h3>
           </div>
 
           <div className="">
             <h2 className="text-[#2F5D86] text-[20px] ">ติดต่อเรา</h2>
-            <div className="text-[#111111] text-[16px] flex gap-1 pt-2">
+            <div className="text-white text-[16px] flex gap-1 pt-2">
               <h3 className="font-bold">โทรศัพท์ : </h3>
               <h4 className="text-decoration-line: underline font-extralight">
                 061-827-6888
               </h4>
             </div>
-            <div className="text-[#111111] text-[16px] flex gap-1 pt-2">
+            <div className="text-white text-[16px] flex gap-1 pt-2">
               <h3 className="font-bold">แฟลกซ์ : </h3>
               <h4 className="text-decoration-line: underline font-extralight">
                 061-827-6888
               </h4>
             </div>
-            <div className="text-[#111111] text-[16px] flex gap-1 pt-2">
+            <div className="text-white text-[16px] flex gap-1 pt-2">
               <h3 className="font-bold">อีเมล : </h3>
               <h4>saraban@acfs.go.th</h4>
             </div>
@@ -242,10 +242,10 @@ function Index() {
         </div>
 
         <div className="justify-self-center">
-          <h3 className="hidden md:block text-[#111111] text-[16px] pt-4">
+          <h3 className="hidden md:block text-white text-[16px] pt-4">
             Copyright © 2023 สำนักงานคณะกรรมการส่งเสริมการศึกษาเอกชน
           </h3>
-          <h3 className="md:hidden  text-[#111111] text-[16px] text-center pt-4">
+          <h3 className="md:hidden  text-white text-[16px] text-center pt-4">
             Copyright © 2023 <br />
             สำนักงานคณะกรรมการส่งเสริมการศึกษาเอกชน
           </h3>
