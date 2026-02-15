@@ -6,7 +6,6 @@ import { getVideoById } from "@/services/videoService";
 import { PeacePlayVideo } from "@/types/peacePlay";
 import Footer from "../../../component/footer";
 import Cards from "../../.../../../component/card";
-import dynamic from "next/dynamic";
 import {
   Card,
   CardBody,
@@ -25,12 +24,23 @@ import { BorderColorSample } from "@/utils/border-comstant";
 import Content from "./tabs/content/page";
 import { Suspense } from "react";
 
-// โหลด Editor แบบ Dynamic
-const ReactQuill = dynamic(() => import("react-quill"), { 
-  ssr: false,
-  loading: () => <div className="h-40 w-full bg-white rounded-md border" />
-});
-import "react-quill/dist/quill.snow.css";
+type SimpleEditorProps = {
+  theme?: string;
+  value: string;
+  onChange: (value: string) => void;
+  className?: string;
+  placeholder?: string;
+};
+
+const ReactQuill = ({ value, onChange, className, placeholder }: SimpleEditorProps) => (
+  <textarea
+    value={value}
+    onChange={(event) => onChange(event.target.value)}
+    className={`w-full rounded-md border border-gray-300 bg-white p-3 text-black outline-none focus:border-blue-500 ${className ?? ""}`}
+    placeholder={placeholder}
+    rows={6}
+  />
+);
 
 // --- Interfaces สำหรับ Review ---
 interface Reply {
