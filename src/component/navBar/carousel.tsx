@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { PeacePlayVideo } from "@/types/peacePlay";
@@ -80,29 +80,33 @@ const Carousel = ({ videos = [] }: CarouselProps) => {
     }
   };
 
+  const finishAd = useCallback(async () => {
+    if (playingVideo) {
+      try {
+        await recordAdView(playingVideo.videoId, user?.uid);
+      } catch (error) {
+        console.error("Ad revenue recording failed", error);
+      } finally {
+        setShowAd(false);
+        setIsVideoUnlocked(true);
+      }
+    }
+  }, [playingVideo, user]);
+
   // Handle Ad Countdown
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (showAd && adTimer > 0) {
-      interval = setInterval(() => {
+    if (!showAd) return;
+
+    if (adTimer > 0) {
+      const interval = setInterval(() => {
         setAdTimer((prev) => prev - 1);
       }, 1000);
-    } else if (showAd && adTimer === 0) {
-      // Ad Finished
+      return () => clearInterval(interval);
+    } else if (adTimer === 0) {
+      // Ad Finished immediately
       finishAd();
     }
-    return () => clearInterval(interval);
-  }, [showAd, adTimer]);
-
-  const finishAd = async () => {
-     if (playingVideo) {
-         // 1. Record Revenue
-         await recordAdView(playingVideo.videoId, user?.uid);
-         // 2. Unlock Content
-         setShowAd(false);
-         setIsVideoUnlocked(true);
-     }
-  };
+  }, [showAd, adTimer, finishAd]);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -142,7 +146,7 @@ const Carousel = ({ videos = [] }: CarouselProps) => {
                   
                   {/* AD OVERLAY LAYER */}
                   {showAd ? (
-                    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/90 text-center relative overflow-hidden">
+                    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/90 text-center overflow-hidden">
                         
                         {/* 1. Background Image (Blurred Context) */}
                         {playingVideo.thumbnailUrl && (
@@ -202,7 +206,16 @@ const Carousel = ({ videos = [] }: CarouselProps) => {
                     <video 
                       src={playingVideo.videoUrl} 
                       controls 
-                      autoPlay 
+                      autoPlay
+                      // Ensure video plays after ad
+                      onLoadedData={(e) => {
+                          const video = e.currentTarget;
+                          video.play().catch(() => {
+                              // If autoplay blocked, mute and try again
+                              video.muted = true;
+                              video.play();
+                          });
+                      }}
                       className="w-full h-full object-contain"
                     >
                       Your browser does not support the video tag.
@@ -388,7 +401,7 @@ const Carousel = ({ videos = [] }: CarouselProps) => {
                   className="bg-[#111] border border-gray-700 text-sm text-white rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 placeholder-gray-500"
                   placeholder="ค้นหา..."
                 />
-                <button type="submit" className="p-2.5 text-sm font-medium text-white bg-cyan-600 rounded-lg border border-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300">
+                <button type="submit" aria-label="Search" className="p-2.5 text-sm font-medium text-white bg-cyan-600 rounded-lg border border-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300">
                     <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                     </svg>

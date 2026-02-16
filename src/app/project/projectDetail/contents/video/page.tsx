@@ -11,14 +11,27 @@ function VideoPlayerContent() {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
   const [video, setVideo] = useState<PeacePlayVideo | null>(null);
+  const [loading, setLoading] = useState(true);
   const [videoProgress, setVideoProgress] = useState<number>(0);
   const [videoDuration, setVideoDuration] = useState<number>();
   const [isPaused, setIsPaused] = useState(false);
+  const [mediaError, setMediaError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     if (id) {
-      getVideoById(id).then(setVideo);
+      setLoading(true);
+      getVideoById(id).then((fetchedVideo) => {
+        setVideo(fetchedVideo);
+        setLoading(false);
+        if (fetchedVideo && !fetchedVideo.videoUrl) {
+          setMediaError("ไม่พบลิงก์วิดีโอ");
+        } else {
+          setMediaError(null);
+        }
+      });
+    } else {
+      setLoading(false);
     }
   }, [id]);
 
@@ -45,14 +58,18 @@ function VideoPlayerContent() {
     }
   }, [videoProgress, videoDuration, isPaused]);
 
-  if (!video) {
+  if (loading) {
       return <div className="p-10 text-center">กำลังโหลดวิดีโอ...</div>;
+  }
+
+  if (!video) {
+      return <div className="p-10 text-center text-red-500">ไม่พบวิดีโอที่คุณต้องการ</div>;
   }
 
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-start gap-10 mt-10">
-        <button onClick={() => window.history.back()}>
+        <button onClick={() => window.history.back()} aria-label="Back">
           <svg
             width="30"
             height="31"
@@ -74,14 +91,21 @@ function VideoPlayerContent() {
 
       <div className="lg:hidden pt-4">
         <div className="w-full lg:w-[60%]">
-          <video 
-            className="w-full h-[300px]" 
-            controls 
-            autoPlay 
-            src={video.videoUrl}
-          >
-            Your browser does not support the video tag.
-          </video>
+          {mediaError ? (
+            <div className="w-full h-[300px] bg-gray-200 flex items-center justify-center text-red-500 font-bold">
+              {mediaError}
+            </div>
+          ) : (
+            <video 
+              className="w-full h-[300px]" 
+              controls 
+              autoPlay 
+              src={video.videoUrl}
+              onError={() => setMediaError("เกิดข้อผิดพลาดในการโหลดวิดีโอ")}
+            >
+              Your browser does not support the video tag.
+            </video>
+          )}
         </div>
       </div>
 
@@ -124,15 +148,22 @@ function VideoPlayerContent() {
 
         <div className="hidden lg:block w-full">
             <div className="relative">
+              {mediaError ? (
+                <div className="w-full h-[60vh] bg-black flex items-center justify-center text-white text-xl">
+                  {mediaError}
+                </div>
+              ) : (
                 <video
                   ref={videoRef}
                   controls
                   autoPlay
                   className="w-full h-[60vh] object-contain bg-black"
                   src={video.videoUrl}
+                  onError={() => setMediaError("เกิดข้อผิดพลาดในการโหลดวิดีโอ")}
                 >
                   Your browser does not support the video tag.
                 </video>
+              )}
             </div>
         </div>
       </div>

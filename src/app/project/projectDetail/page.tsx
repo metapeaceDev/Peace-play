@@ -38,6 +38,7 @@ const ReactQuill = ({ value, onChange, className, placeholder }: SimpleEditorPro
     onChange={(event) => onChange(event.target.value)}
     className={`w-full rounded-md border border-gray-300 bg-white p-3 text-black outline-none focus:border-blue-500 ${className ?? ""}`}
     placeholder={placeholder}
+    aria-label={placeholder || "Text Editor"}
     rows={6}
   />
 );
@@ -61,35 +62,6 @@ interface ForumPost {
 }
 
 function ProjectDetailContent() {
-
-// ข้อมูลสำหรับรายละเอียดผู้สร้าง
-const [productionCredits] = useState({
-  director: "Sze-Yu Lau",
-  writer: "Jing-Kong Tsui",
-  stars: ["Stephen Chow", "Bill Tung", "Stanley Sui-Fan Fung"],
-  producer: "Tin-Chi Lau",
-  composer: "Sherman Chow",
-  cinematographer: "Wen-Yun Huang",
-  editor: "Hsing-Lung Chiang",
-  artDirector: "Frederick Chan",
-  costumeDesigner: "Suk-Wah Chiu",
-  productionManager: "Lee-Wah Chan",
-  stunts: "To-Hoi Kong",
-  lightingTechnician: "Shu-wah Chan",
-  scriptSupervisor: "Pony Mok",
-  productionAdvisor: "Susanna Tsang",
-  props: "Siu Kwok"
-});
-
-// ข้อมูลสำหรับ Top Cast (รูปวงกลม)
-const [topCast] = useState([
-  { name: "Stephen Chow", character: "Hsing", img: "https://i.pravatar.cc/150?u=1" },
-  { name: "Bill Tung", character: "Chang Piao", img: "https://i.pravatar.cc/150?u=2" },
-  { name: "Stanley Sui-Fan Fung", character: "Chin", img: "https://i.pravatar.cc/150?u=3" },
-  { name: "Vivian Chen", character: "Yu", img: "https://i.pravatar.cc/150?u=4" },
-  { name: "Kong Fong", character: "Tang Lee Yang", img: "https://i.pravatar.cc/150?u=5" },
-  { name: "Siu-Wai Mui", character: "Beautiful", img: "https://i.pravatar.cc/150?u=6" },
-]);  
   const router = useRouter();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const searchParams = useSearchParams();
@@ -101,7 +73,7 @@ const [userRating, setUserRating] = useState<number | null>(null);
 const [tempRating, setTempRating] = useState(0); // คะแนนชั่วคราวใน Modal
 const { isOpen: isRateModalOpen, onOpen: onOpenRateModal, onOpenChange: onRateModalChange } = useDisclosure();
 
-// ข้อมูลจำลองสถิติคะแนน (อิงตามภาพ 1)
+// ข้อมูลจำลองสถิติคะแนน (ยังคงไว้เป็น Placeholder จนกว่าจะมี Realtime Data)
 const ratingStats = [
   { score: 10, percent: 54.9, count: "1.7M" },
   { score: 9, percent: 25.9, count: "818K" },
@@ -127,50 +99,6 @@ const ratingStats = [
   const [postType, setPostType] = useState<"Discussion" | "Question">("Discussion");
   const [replyText, setReplyText] = useState("");
 
-  const videoContents = [
-    { id: 1, title: "เล่าถึงชีวิต เจิด", duration: "00:30" },
-    { id: 2, title: "เรื่องราวของเจียง", duration: "00:15" },
-    { id: 3, title: "การทำงานกับโลกภายในของตนเอง", duration: "00:30" },
-    { id: 4, title: "ยอมรับ", duration: "00:15" },
-  ];
-
-  const [scripts] = useState([
-  {
-    id: 1,
-    title: "Breaking Bad 101: Pilot",
-    description: "Diagnosed with terminal lung cancer, chemistry teacher Walter White teams up with former student Jesse Pinkman to cook and sell crystal meth.",
-    buttonText: "Read Screenplay - Pilot",
-    url: "https://f004.backblazeb2.com/file/screenplays/posts/breaking-bad-2008/scripts/Breaking%20Bad%20-%20Release.pdf"
-  },
-  {
-    id: 2,
-    title: "Breaking Bad 104: Gray Matter",
-    description: "Walt rejects everyone who tries to help him with the cancer. Jesse tries his best to create Walt's meth, with the help of an old friend.",
-    buttonText: "Read Screenplay - Gray Matter",
-    url: "https://f004.backblazeb2.com/file/screenplays/posts/breaking-bad-2008/scripts/Breaking%20Bad%20-%20Release.pdf"
-  },
-  {
-    id: 3,
-    title: "Breaking Bad 301: No Mas",
-    description: "Skyler goes through with her plans to divorce Walt. Jesse finishes rehab.",
-    buttonText: "Read Screenplay - No Mas",
-    url: "https://f004.backblazeb2.com/file/screenplays/posts/breaking-bad-2008/scripts/Breaking%20Bad%20-%20Release.pdf"
-  },
-  {
-    id: 4,
-    title: "Breaking Bad 303: I.F.T.",
-    description: "Walt has moved back into the house without Skyler's consent. Now she can't get him out. Meanwhile, Jesse continues to cope with Jane's death.",
-    buttonText: "Read Screenplay - I.F.T.",
-    url: "https://f004.backblazeb2.com/file/screenplays/posts/breaking-bad-2008/scripts/Breaking%20Bad%20-%20Release.pdf"
-  },
-  {
-    id: 5,
-    title: "Breaking Bad 305: Más",
-    description: "Gus tries to get Walt back in the business by offering him three million dollars and a brand new lab. Jesse is furious that Walt received half of the money for his blue meth. Hank tries to track down the RV meth lab.",
-    buttonText: "Read Screenplay - Más",
-    url: "https://f004.backblazeb2.com/file/screenplays/posts/breaking-bad-2008/scripts/Breaking%20Bad%20-%20Release.pdf"
-  }
-]);
   useEffect(() => {
     if (id) {
       getVideoById(id).then(setVideo);
@@ -217,7 +145,7 @@ const ratingStats = [
     <>
       {/* 1. Hero Section */}
       <div className="relative flex h-[300px] lg:h-[800px] w-full mix-blend-overla mt-[0px]">
-        <Image src={video.thumbnailUrl || "/assets/image8.png"} className="object-cover" alt={video.title} fill />
+        <Image src={video.thumbnailUrl || "/assets/image8.png"} className="object-cover" alt={video.title} fill priority />
         <div className="absolute top-[35%] px-20 w-full z-10">
           <p className="text-white text-7xl mb-4">{video.title}</p>
           <p className="text-white text-base tracking-widest">{video.resolution} | {Number(video.duration / 60).toFixed(0)}m | {video.format}</p>
@@ -254,8 +182,8 @@ const ratingStats = [
           <div className="hidden md:block">
             <div className="flex justify-between mt-6">
               <div>
-                <div className="text-white text-[24px] py-1">ID : TN00025</div>
-                <div className="text-white text-[32px] py-2">สัปเหร่อ (จักรวาลไทบ้าน)</div>
+                <div className="text-white text-[24px] py-1">ID : {video.videoId || video.projectId || 'Unknown'}</div>
+                <div className="text-white text-[32px] py-2">{video.title}</div>
               </div>
               <div className="w-[300px] h-[100px] flex gap-2">
                 <Button className="bg-[#2F5D86] text-white text-[18px] w-1/2" radius="sm" onPress={() => router.push(`/project/projectDetail/contents/video?id=${video?.videoId}`)}>รับชม</Button>
@@ -268,22 +196,22 @@ const ratingStats = [
           <div className="flex items-center gap-2 py-4 text-white">
             <span className="flex items-center gap-1 text-[10px] md:text-[16px]">
                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M8 7.33a2.33 2.33 0 1 0 0-4.66 2.33 2.33 0 0 0 0 4.66ZM4.7 10.7a4.67 4.67 0 0 0 6.6 0" strokeLinecap="round"/></svg>
-               500 ผู้เรียน
+               {video.totalLearners ? `${video.totalLearners} ผู้เรียน` : `${video.views} ผู้เข้าชม`}
             </span>
             <span className="flex items-center gap-1 px-6 text-[10px] md:text-[16px]">
                <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor"><path d="M1.33 2.33V11.66A1.33 1.33 0 0 0 2.66 13H9.33A1.33 1.33 0 0 0 10.66 11.66V5.27L6.86 1.2A.67.67 0 0 0 6.39 1H2.66A1.33 1.33 0 0 0 1.33 2.33Z" strokeLinecap="round"/></svg>
-               5 ยูนิต
+               {video.totalUnits ? `${video.totalUnits} ยูนิต` : "1 ตอน"}
             </span>
             <span className="flex items-center gap-1 text-[10px] md:text-[16px]">
                <svg width="20" height="18" viewBox="0 0 20 18" fill="#FFD100"><path d="M9.04 1.22c.28-.95 1.63-.95 1.91 0l1.36 4.56h4.75c1 0 1.41 1.28.6 1.84l-3.92 2.7 1.58 4.48c.33.94-.76 1.73-1.55 1.13L10 14.77l-3.77 2.89c-.79.6-1.88-.2-1.55-1.13l1.58-4.48-3.92-2.7c-.81-.56-.4-1.84.6-1.84h4.75L9.04 1.22Z"/></svg>
-               4.8 (รีวิว 2K)
+               {video.rating ? `${video.rating} (รีวิว ${video.totalRatings || 0})` : "N/A"}
             </span>
           </div>
 
           <div className="text-white text-[10px] md:text-[16px] pb-4">ผู้เขียน</div>
           <div className="flex gap-2 items-center mb-6">
              <div className="bg-[#D9D9D9] p-5 rounded-full"></div>
-             <p className="text-[10px] md:text-[16px] text-white">สุรศักดิ์ ป้องศร</p>
+             <p className="text-[10px] md:text-[16px] text-white">{video.writer || video.userId || 'Unknown'}</p>
           </div>
 
           {/* ส่วน ภาพรวม (Overview) - แก้ไขเพิ่มกลับมาให้แล้ว */}
@@ -291,11 +219,11 @@ const ratingStats = [
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-white mb-8 pt-4">
              <div className="flex items-center gap-3 py-2">
                 <svg width="24" height="24" fill="none" stroke="currentColor"><path d="M12 5c-4.48 0-8.27 2.94-9.54 7 1.27 4.06 5.06 7 9.54 7s8.27-2.94 9.54-7c-1.27-4.06-5.06-7-9.54-7ZM12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" strokeLinecap="round"/></svg>
-                <p className="text-sm">124 การดู</p>
+                <p className="text-sm">{video.views} การดู</p>
              </div>
              <div className="flex items-center gap-3 py-2">
                 <svg width="24" height="24" fill="none" stroke="currentColor"><path d="M12 3v9l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" strokeLinecap="round"/></svg>
-                <p className="text-sm">ระยะเวลาที่คาดหวัง : 01:30:00</p>
+                <p className="text-sm">ระยะเวลา : {video.duration ? `${Math.floor(video.duration / 60)} นาที` : "N/A"}</p>
              </div>
              <div className="flex items-center gap-3 py-2">
                 <svg width="24" height="24" fill="none" stroke="currentColor"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z" strokeLinecap="round"/></svg>
@@ -303,14 +231,14 @@ const ratingStats = [
              </div>
              <div className="flex items-center gap-3 py-2">
                 <svg width="24" height="24" fill="none" stroke="currentColor"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z" strokeLinecap="round"/></svg>
-                <p className="text-sm">ระยะเวลาหลักสูตร : 01 ม.ค. 2566 - 31 ธ.ค. 2566</p>
+                <p className="text-sm">เผยแพร่เมื่อ : {video.publishedAt?.toDate ? new Date(video.publishedAt.toDate()).toLocaleDateString('th-TH') : "N/A"}</p>
              </div>
           </div>
 
           {/* Gallery 3x3 */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
-            {[...Array(9)].map((_, i) => (
-              <div key={i}><Image width={500} height={500} className="rounded-lg" src={`https://flowbite.s3.amazonaws.com/docs/gallery/square/image${i === 0 ? '' : '-' + i}.jpg`} alt=""/></div>
+            {(video.gallery && video.gallery.length > 0 ? video.gallery : [...Array(9)].map((_, i) => `https://flowbite.s3.amazonaws.com/docs/gallery/square/image${i === 0 ? '' : '-' + i}.jpg`)).map((src, i) => (
+              <div key={i}><Image width={500} height={500} className="rounded-lg object-cover w-full h-full aspect-square" src={src} alt="Gallery image"/></div>
             ))}
           </div>
 
@@ -335,67 +263,69 @@ const ratingStats = [
     <div className="space-y-4 border-b border-white/10 pb-6">
       <div className="flex gap-4 items-center border-b border-white/10 pb-3">
         <span className="font-bold w-20">Director</span>
-        <span className="text-blue-400 cursor-pointer hover:underline">{productionCredits.director}</span>
+        <span className="text-blue-400 cursor-pointer hover:underline">{video.director || "-"}</span>
       </div>
       <div className="flex gap-4 items-center border-b border-white/10 pb-3">
         <span className="font-bold w-20">Writer</span>
-        <span className="text-blue-400 cursor-pointer hover:underline">{productionCredits.writer}</span>
+        <span className="text-blue-400 cursor-pointer hover:underline">{video.writer || "-"}</span>
       </div>
       <div className="flex gap-4 items-center border-b border-white/10 pb-3">
         <span className="font-bold w-20">Stars</span>
         <div className="flex gap-2 text-blue-400 overflow-x-auto whitespace-nowrap">
-          {productionCredits.stars.map((star, idx) => (
+          {(video.stars || []).length > 0 ? (video.stars || []).map((star, idx) => (
             <span key={star} className="hover:underline cursor-pointer">
-              {star}{idx !== productionCredits.stars.length - 1 && " •"}
+              {star}{idx !== (video.stars?.length ?? 0) - 1 && " •"}
             </span>
-          ))}
+          )) : <span className="text-gray-500">-</span>}
         </div>
       </div>
     </div>
 
-    {/* --- ส่วน Top Cast (ภาพที่ 2) --- */}
+    {/* --- ส่วน Characters (จาก Peace Script AI Step 3) --- */}
     <div>
       <div className="flex items-center gap-2 mb-6">
         <div className="w-1 h-6 bg-[#FFD100]"></div>
-        <h3 className="text-2xl font-bold">Top Cast <span className="text-gray-400 text-lg font-normal">26 {">"}</span></h3>
+        <h3 className="text-2xl font-bold">Characters <span className="text-gray-400 text-lg font-normal">{(video.characters?.length || video.cast?.length || 0)} {">"}</span></h3>
       </div>
+      {((video.characters && video.characters.length > 0) || (video.cast && video.cast.length > 0)) ? (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {topCast.map((cast) => (
-          <div key={cast.name} className="flex items-center gap-4 group">
+        {(video.characters && video.characters.length > 0 ? video.characters : video.cast || []).map((item : any, idx : number) => (
+          <div key={idx} className="flex items-center gap-4 group">
             <div className="relative">
               <Image 
-                src={cast.img} 
+                src={item.img || item.image || "https://i.pravatar.cc/150?u=" + (item.name || idx)} 
                 width={80} height={80} 
-                className="rounded-full object-cover border-2 border-transparent group-hover:border-[#FFD100] transition-all" 
-                alt={cast.name} 
+                className="rounded-full object-cover border-2 border-transparent group-hover:border-[#FFD100] transition-all w-[80px] h-[80px]" 
+                alt={item.name || "Character"} 
               />
-              <button className="absolute bottom-0 right-0 bg-[#1a1a1a] rounded-full p-1 border border-white/20 hover:text-red-500 transition-colors">
+              <button aria-label="Favorite character" className="absolute bottom-0 right-0 bg-[#1a1a1a] rounded-full p-1 border border-white/20 hover:text-red-500 transition-colors">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
               </button>
             </div>
             <div>
-              <p className="font-bold text-lg hover:text-blue-400 cursor-pointer transition-colors">{cast.name}</p>
-              <p className="text-gray-400">{cast.character}</p>
+              <p className="font-bold text-lg hover:text-blue-400 cursor-pointer transition-colors">{item.name}</p>
+              <p className="text-gray-400">{item.description || item.character || item.role || ""}</p>
             </div>
           </div>
         ))}
       </div>
+      ) : <p className="text-gray-500">No character information available.</p>}
     </div>
 
     {/* --- ส่วนรายละเอียดทีมงานทั้งหมด (ภาพที่ 3, 4, 5) --- */}
     <div className="space-y-6 pt-6">
       {[
-        { title: "Producer", name: productionCredits.producer },
-        { title: "Composer", name: productionCredits.composer },
-        { title: "Cinematographer", name: productionCredits.cinematographer },
-        { title: "Editor", name: productionCredits.editor },
-        { title: "Art Director", name: productionCredits.artDirector },
-        { title: "Costume Designer", name: productionCredits.costumeDesigner },
-        { title: "Production Management", name: productionCredits.productionManager, role: "production manager" },
-        { title: "Stunts", name: productionCredits.stunts, role: "action designer" },
-        { title: "Camera and Electrical", name: productionCredits.lightingTechnician, role: "lighting technician" },
-        { title: "Script and Continuity", name: productionCredits.scriptSupervisor, role: "script supervisor" },
-      ].map((section) => (
+        { title: "Producer", name: video.producer },
+        { title: "Composer", name: video.composer },
+        { title: "Cinematographer", name: video.cinematographer },
+        { title: "Editor", name: video.editor },
+        { title: "Art Director", name: video.artDirector },
+        { title: "Costume Designer", name: video.costumeDesigner },
+        { title: "Production Management", name: video.productionManager, role: "production manager" },
+        { title: "Stunts", name: video.stunts, role: "action designer" },
+        { title: "Camera and Electrical", name: video.lightingTechnician, role: "lighting technician" },
+        { title: "Script and Continuity", name: video.scriptSupervisor, role: "script supervisor" },
+      ].filter(section => section.name).map((section) => (
         <div key={section.title}>
           <div className="flex items-center gap-2 mb-3">
             <div className="w-1 h-5 bg-[#FFD100]"></div>
@@ -413,36 +343,68 @@ const ratingStats = [
 
 
               {activeTab === "เนื้อหา" && (
-                <div className="flex flex-col gap-2">
-                  {videoContents.map((item) => (
-                    <button key={item.id} className="flex items-center justify-between bg-[#2F5D86] hover:bg-[#FFD100]/20 text-white rounded-lg px-4 py-3 mb-2 border border-[#FFD100] group">
-                      <span className="group-hover:text-[#FFD100]">{item.title}</span>
-                      <span className="text-xs text-[#FFD100]">{item.duration}</span>
-                    </button>
-                  ))}
+                <div className="flex flex-col gap-6 text-white animate-appearance-in pb-10">
+                   {video.storyScope ? (
+                      <div className="bg-white/5 p-6 rounded-xl border border-white/10">
+                        <h3 className="text-xl font-bold mb-4 text-[#FFD100] flex items-center gap-2">
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+                          Story Scope
+                        </h3>
+                        <p className="whitespace-pre-wrap leading-relaxed text-gray-300 font-light text-lg">
+                          {video.storyScope}
+                        </p>
+                      </div>
+                   ) : null}
+
+                  {(video.episodes && video.episodes.length > 0) ? (
+                    <div>
+                      <h4 className="text-lg font-bold mb-3 text-white/80">Episodes</h4>
+                      <div className="flex flex-col gap-2">
+                        {video.episodes.map((item) => (
+                          <button key={item.id} className="flex items-center justify-between bg-[#2F5D86] hover:bg-[#FFD100]/20 text-white rounded-lg px-4 py-3 border border-[#FFD100] group transition-all">
+                            <span className="group-hover:text-[#FFD100] font-medium">{item.title}</span>
+                            <span className="text-xs text-[#FFD100] bg-black/20 px-2 py-1 rounded">{item.duration}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                     !video.storyScope && <div className="text-center p-10 text-gray-400">ไม่มีเนื้อหาเพิ่มเติมในขณะนี้</div>
+                  )}
                 </div>
               )}
 
 {activeTab === "บทสคริป" && (
   <div className="space-y-6 animate-appearance-in pb-10">
+    {video.screenplayPreview && (
+       <div className="bg-white p-8 rounded-xl shadow-lg text-gray-800 border-l-8 border-[#FF6B00]">
+          <h2 className="text-2xl font-bold mb-6 border-b pb-4 text-[#FF6B00]">Screenplay Preview</h2>
+          <div className="whitespace-pre-wrap font-mono text-sm md:text-base leading-relaxed text-gray-700 bg-gray-50 p-6 rounded-lg border border-gray-200">
+             {video.screenplayPreview}
+          </div>
+       </div>
+    )}
+
+    {(video.relatedScripts && video.relatedScripts.length > 0) ? (
+      <>
     {/* --- ส่วนหัวสคริปต์หลัก (สไตล์การ์ดใหญ่) --- */}
     <div className="bg-white rounded-xl overflow-hidden shadow-lg flex flex-col md:flex-row">
       <div className="w-full md:w-[300px] relative h-[300px] md:h-auto">
         <Image 
-          src="https://m.media-amazon.com/images/M/MV5BMjhiMzgxZTctNDc1Ni00OTIxLTlhMTYtZTA3ZWFkODRkNmE2XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg" 
+          src={video.thumbnailUrl || "https://m.media-amazon.com/images/M/MV5BMjhiMzgxZTctNDc1Ni00OTIxLTlhMTYtZTA3ZWFkODRkNmE2XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg"} 
           fill className="object-cover" alt="Main Screenplay" 
         />
       </div>
       <div className="flex-1 p-8 flex flex-col justify-center">
-        <h2 className="text-3xl font-bold text-gray-800 mb-4">Breaking Bad Screenplay</h2>
+        <h2 className="text-3xl font-bold text-gray-800 mb-4">{video.relatedScripts[0].title}</h2>
         <p className="text-gray-600 mb-8 leading-relaxed">
-          A high school chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine in order to secure his family's future.
+          {video.relatedScripts[0].description}
         </p>
-        <Button className="bg-[#FF6B00] text-white font-bold h-12 text-lg hover:bg-[#e66000]">
-          Read Screenplay - Release
+        <Button className="bg-[#FF6B00] text-white font-bold h-12 text-lg hover:bg-[#e66000]" onPress={() => window.open(video.relatedScripts?.[0].url, '_blank')}>
+          Read Screenplay
         </Button>
         <div className="flex flex-wrap gap-2 mt-6">
-          {["Crime", "Drama", "Thriller", "Vince Gilligan", "Patty Lin"].map(tag => (
+          {(video.tags || []).map(tag => (
             <span key={tag} className="bg-gray-200 text-gray-600 text-[10px] px-2 py-1 rounded">
               {tag}
             </span>
@@ -453,7 +415,7 @@ const ratingStats = [
 
     {/* --- รายการสคริปต์ตอนย่อย (สไตล์ List การ์ด) --- */}
     <div className="space-y-4">
-      {scripts.map((script) => (
+      {video.relatedScripts.slice(1).map((script) => (
         <div key={script.id} className="bg-white rounded-xl p-8 shadow-md border border-gray-100">
           <h3 className="text-2xl font-bold text-gray-800 mb-2">{script.title}</h3>
           <p className="text-gray-600 mb-6 leading-relaxed">
@@ -462,11 +424,18 @@ const ratingStats = [
           <Button 
             className="w-full bg-[#FF6B00] text-white font-bold h-12 text-lg hover:bg-[#e66000] transition-colors" onPress={() => window.open(script.url, "_blank")}
           >
-            {script.buttonText}
+            Read
           </Button>
         </div>
       ))}
     </div>
+    </>
+    ) : (
+      <div className="bg-white/5 rounded-xl p-10 text-center">
+            <h3 className="text-xl text-gray-300 font-bold mb-2">No Scripts Available</h3>
+            <p className="text-gray-500">ยังไม่มีบทสคริปที่เชื่อมโยงกับโปรเจกต์นี้</p>
+      </div>
+    )}
   </div>
 )}
 
@@ -564,7 +533,7 @@ const ratingStats = [
                     {/* <div className="p-4 border-b text-gray-500 font-bold text-xs uppercase bg-gray-50">All posts</div> */}
                     <div className="p-4 border-b flex justify-between items-center bg-white sticky top-0 z-10">
                       <span className="text-blue-700 font-medium text-sm">All posts sorted by recent activity</span>
-                      <Button isIconOnly variant="light" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                      <Button isIconOnly variant="light" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)} aria-label="Filter posts">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth="2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
                       </Button>
                     </div>
@@ -658,7 +627,7 @@ const ratingStats = [
                     {!isAddingPost && !selectedPost && (
                       <div className="h-full flex flex-col items-center justify-center text-gray-300">
                         <svg className="w-16 h-16 opacity-10 mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-                        <p>Select a post to read or click "Add a post" to start</p>
+                        <p>Select a post to read or click &quot;Add a post&quot; to start</p>
                       </div>
                     )}
                   </div>
@@ -676,102 +645,15 @@ const ratingStats = [
         </div>
       </div>
       <Footer />
-<Modal 
+<RatingModal 
   isOpen={isRateModalOpen} 
   onOpenChange={onRateModalChange}
-  hideCloseButton
-  size="xl"
-  classNames={{
-    base: "bg-[#1a1a1a] text-white overflow-visible",
+  title={video?.title || "Project"}
+  onRateSubmit={(rating) => {
+    setUserRating(rating);
+    onRateModalChange();
   }}
->
-  <ModalContent>
-    {(onClose) => {
-      // ใช้ State ภายใน Modal เพื่อจัดการความลื่นไหล
-      const [hoverRating, setHoverRating] = useState(0);
-      const [selectedRating, setSelectedRating] = useState(0);
-
-      const handleRateSubmit = () => {
-        if (selectedRating > 0) {
-          setUserRating(selectedRating); // บันทึกค่าจริงลง Global State
-          onClose(); // ปิด Modal
-        }
-      };
-
-      return (
-        <div className="relative py-12 px-6 flex flex-col items-center">
-          {/* ปุ่มปิดมุมขวา */}
-          <button 
-            onClick={onClose}
-            className="absolute top-4 right-4 text-white hover:opacity-70 z-50"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-          </button>
-
-          {/* ดาวสีฟ้าดวงใหญ่ด้านบน */}
-          <div className="absolute -top-12 flex justify-center w-full">
-             <div className="relative flex items-center justify-center">
-                <svg width="100" height="100" viewBox="0 0 24 24" fill="#5799ef">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
-                {/* แสดงผลตามการ Hover ถ้าไม่ได้ Hover ให้แสดงตามที่เลือก */}
-                <span className="absolute text-white text-2xl font-bold">
-                  {hoverRating || selectedRating || "?"}
-                </span>
-             </div>
-          </div>
-
-          <p className="text-[#FFD100] font-bold text-xs tracking-widest mb-2 mt-4 uppercase">RATE THIS</p>
-          <h2 className="text-2xl font-bold mb-8 text-center">{video?.title || "The Shawshank Redemption"}</h2>
-
-          {/* ส่วนดาว 10 ดวง */}
-          <div 
-            className="flex gap-1 mb-10"
-            onMouseLeave={() => setHoverRating(0)} // ล้างค่า hover เมื่อเมาส์ออกจากพื้นที่ดาว
-          >
-            {[...Array(10)].map((_, i) => {
-              const ratingValue = i + 1;
-              // ตัดสินใจว่าดาวควรเป็นสีอะไร (สีฟ้าถ้า hover ถึง หรือเลือกถึง)
-              const isActive = (hoverRating || selectedRating) >= ratingValue;
-              
-              return (
-                <button
-                  key={i}
-                  onMouseEnter={() => setHoverRating(ratingValue)}
-                  onClick={() => setSelectedRating(ratingValue)}
-                  className="transition-transform hover:scale-125 focus:outline-none"
-                  type="button"
-                >
-                  <svg 
-                    width="32" height="32" viewBox="0 0 24 24" 
-                    fill={isActive ? "#5799ef" : "none"} 
-                    stroke={isActive ? "#5799ef" : "white"} 
-                    strokeWidth="1.5"
-                  >
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                  </svg>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* ปุ่ม Rate */}
-          <Button 
-            className={`w-full max-w-xs font-bold text-lg h-12 transition-colors ${
-              selectedRating > 0 
-                ? 'bg-[#FFD100] text-black hover:bg-[#e6bc00]' 
-                : 'bg-[#333] text-gray-500 cursor-not-allowed'
-            }`}
-            isDisabled={selectedRating === 0}
-            onPress={handleRateSubmit}
-          >
-            {selectedRating > 0 ? `Rate ${selectedRating}/10` : 'Rate'}
-          </Button>
-        </div>
-      );
-    }}
-  </ModalContent>
-</Modal>
+/>
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
@@ -791,6 +673,80 @@ const ratingStats = [
   );
 }
 
+const RatingModal = ({ isOpen, onOpenChange, title, onRateSubmit }: { isOpen: boolean, onOpenChange: () => void, title: string, onRateSubmit: (rating: number) => void }) => {
+  const [hoverRating, setHoverRating] = useState(0);
+  const [selectedRating, setSelectedRating] = useState(0);
+
+  const handleRateSubmit = () => {
+    if (selectedRating > 0) {
+      onRateSubmit(selectedRating);
+    }
+  };
+
+  return (
+    <Modal 
+      isOpen={isOpen} 
+      onOpenChange={onOpenChange}
+      hideCloseButton
+      size="xl"
+      classNames={{
+        base: "bg-[#1a1a1a] text-white overflow-visible",
+      }}
+    >
+      <ModalContent>
+        {(onClose) => (
+            <div className="relative py-12 px-6 flex flex-col items-center">
+              <button 
+                onClick={onClose}
+                className="absolute top-4 right-4 text-white hover:opacity-70 z-50"
+                aria-label="Close modal"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+
+              <div className="w-20 h-20 bg-[#FFD100] rounded-full flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(255,209,0,0.3)]">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+
+              <h3 className="text-[#FFD100] text-sm font-bold tracking-widest mb-2 uppercase">Rate This</h3>
+              <h2 className="text-3xl font-bold text-white mb-8">{title}</h2>
+
+              <div className="flex gap-2 mb-10" onMouseLeave={() => setHoverRating(0)}>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
+                  <button
+                    key={star}
+                    className="transition-transform hover:scale-110 focus:outline-none"
+                    onMouseEnter={() => setHoverRating(star)}
+                    onClick={() => setSelectedRating(star)}
+                    type="button"                    aria-label={`Rate ${star} out of 10`}                  >
+                    <svg 
+                      width="32" 
+                      height="32" 
+                      viewBox="0 0 24 24" 
+                      fill={(hoverRating || selectedRating) >= star ? "#5799CF" : "none"} 
+                      stroke={(hoverRating || selectedRating) >= star ? "#5799CF" : "#666"}
+                      strokeWidth="1.5"
+                      className="transition-colors duration-200"
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  </button>
+                ))}
+              </div>
+
+              <Button 
+                className={`w-full max-w-xs font-bold text-lg h-12 ${selectedRating > 0 ? 'bg-[#FFD100] text-black hover:bg-[#ffe066]' : 'bg-gray-700 text-gray-400 cursor-not-allowed'}`}
+                disabled={selectedRating === 0}
+                onPress={handleRateSubmit}
+              >
+                Rate {selectedRating > 0 ? `${selectedRating}/10` : ''}
+              </Button>
+            </div>
+        )}
+      </ModalContent>
+    </Modal>
+  );
+};
 
 export default function Page() {
   return (

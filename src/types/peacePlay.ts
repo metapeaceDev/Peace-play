@@ -66,6 +66,57 @@ export interface PeacePlayVideo {
   createdAt: Timestamp;               // Created timestamp
   updatedAt: Timestamp;               // Last updated timestamp
   publishedAt?: Timestamp;            // Published timestamp (when made public)
+
+  // Extended Metadata (Peace Script AI Integration)
+  director?: string;
+  writer?: string;
+  stars?: string[];
+  producer?: string;
+  composer?: string;
+  cinematographer?: string;
+  editor?: string;
+  artDirector?: string;
+  costumeDesigner?: string;
+  productionManager?: string;
+  stunts?: string;
+  lightingTechnician?: string;
+  scriptSupervisor?: string;
+  
+  // Stats
+  rating?: number;
+  totalRatings?: number;
+  totalLearners?: number;
+  totalUnits?: number;
+
+  // Rich Content
+  storyScope?: string;
+  screenplayPreview?: string;
+  characters?: {
+    name: string;
+    role?: string;
+    description?: string;
+    img?: string;
+  }[];
+  gallery?: string[];
+  
+  cast?: {
+    name: string;
+    character: string;
+    img?: string;
+  }[];
+  
+  relatedScripts?: {
+    id: number | string;
+    title: string;
+    description: string;
+    url: string;
+  }[];
+
+  episodes?: { // videoContents
+    id: number | string;
+    title: string;
+    duration: string;
+  }[];
 }
 
 /**

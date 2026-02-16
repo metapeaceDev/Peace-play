@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/config/firebase";
 import { useRouter } from "next/navigation";
@@ -25,7 +25,7 @@ const SignInPage = () => {
     setSourceParam(params.get("from"));
   }, []);
 
-  const getSafeRedirect = () => {
+  const getSafeRedirect = useCallback(() => {
     if (sourceParam === "peace-script") {
       return "/";
     }
@@ -46,14 +46,14 @@ const SignInPage = () => {
     }
 
     return "/";
-  };
+  }, [sourceParam, returnUrlParam]);
 
   useEffect(() => {
     if (authLoading) return;
     if (user) {
       router.replace(getSafeRedirect());
     }
-  }, [authLoading, user, router, sourceParam, returnUrlParam]);
+  }, [authLoading, user, router, getSafeRedirect]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
